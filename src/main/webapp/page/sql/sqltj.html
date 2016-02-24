@@ -1,4 +1,4 @@
-<!-- Content Header (Page header) -->
+<!-- Content Header (Page header) --> 
 <section class="content-header">
 	<h1>SQL统计</h1>
 	<ol class="breadcrumb">
@@ -14,10 +14,51 @@
 
 				<div class="box-header">
 				 <form action="" id="query_Form">
-					<select onchange="datasouce_change()" name="ds" id="datasource" class="form-control" style="width: 200px;">
-		            </select>
+				 	<input name="begin" id="begin" type="hidden"/> 
+				 	<input name="end" id="end" type="hidden"/> 
+					<div class="row">
+							<div class="col-xs-3">
+								<div class="form-group">
+									<label for="username">用户:</label> <input id="username"
+										type="text" name="username" class="form-control" id="username"
+										placeholder="用户" validateType="lengthRange-1-100">
+								</div>
+							</div>
+							<div class="col-xs-3"> 
+								<label for="mycatName">查询条件:</label> 
+								<div class="form-group">
+									<select onchange="datasouce_change()" name="ds" id="datasource" class="form-control" style="width: 200px;">
+		            				</select>
+								</div>
+							</div>
+<!-- 							<div class="col-xs-8">
+								<div class="form-group">
+									 <button class="btn btn-primary"  onclick="exportcsv()" type="button">导出CSV</button>
+								</div>
+							</div> -->
+							<div class="col-xs-6">
+								<div class="form-group"> 
+								<label for="mycatName">区间查询:</label>
+									<div class="input-group">
+										<div class="input-group-addon">
+											<i class="fa fa-clock-o"></i>
+										</div>
+										<input type="text" class="form-control pull-right"
+											id="reservationtime">
+									</div>
+								</div>
+							</div>
+						</div>
 		         </form>
 				</div>
+				<div class="box-footer">
+					<div class="form-group">
+						<div class="col-lg-offset-5 col-lg-2">
+							<button class="btn btn-primary" onclick="queryForm('query_Form');loadData();">查询</button>
+							<button class="btn btn-primary" onclick="resetBtn('query_Form')">重置</button>
+						</div>
+					</div>
+				</div>		
 				<div class="box-body">
 				 
 				  <div style="float: left">
@@ -32,6 +73,8 @@
 						</div>
 					</div>
 				</div>
+				
+				
 			</div>
 		</div>
 	</div>
@@ -45,7 +88,6 @@
 </script>
 
 <script type="text/javascript">
-var mmgrid;
 /**
  * 时间原型增加一个 format 函数
  */
@@ -68,13 +110,71 @@ Date.prototype.format = function(fmt) {
 }
 
 var datasouce_change = function(){
-	loadData();
+	var daterange = $('#reservationtime').val().split('~');
+	var begin = daterange[0].trim();
+	var end = daterange[1].trim();
+	$('#begin').val(begin);
+	$('#end').val(end); 
+//	queryForm('query_Form');
+
+//	loadData();
 }
 
-//10秒钟刷新一次
-//setInterval("loadData()",10 * 1000);
-//loadData();
- 
+
+//Date range picker with time picker
+$('#reservationtime').daterangepicker(
+		{
+			maxDate : moment(), //最大时间
+			showDropdowns : true,
+			showWeekNumbers : false, //是否显示第几周
+			timePicker : true, //是否显示小时和分钟
+			timePickerIncrement : 60, //时间的增量，单位为分钟
+			timePicker12Hour : false, //是否使用12小时制来显示时间
+			ranges : {
+				//'最近1小时': [moment().subtract('hours',1), moment()],
+				'今日' : [ moment().startOf('day'), moment() ],
+				'昨日' : [
+						moment().subtract('days', 1).startOf(
+								'day'),
+						moment().subtract('days', 1).endOf(
+								'day') ],
+				'最近7日' : [ moment().subtract('days', 6),
+						moment() ],
+				'最近30日' : [ moment().subtract('days', 29),
+						moment() ]
+			},
+			opens : 'right', //日期选择框的弹出位置
+			format : 'YYYY-MM-DD HH:mm', //控件中from和to 显示的日期格式
+			separator : ' to ',
+			locale : {
+				applyLabel : '确定',
+				cancelLabel : '取消',
+				fromLabel : '起始时间',
+				toLabel : '结束时间',
+				customRangeLabel : '自定义',
+				daysOfWeek : [ '日', '一', '二', '三', '四', '五',
+						'六' ],
+				monthNames : [ '一月', '二月', '三月', '四月', '五月',
+						'六月', '七月', '八月', '九月', '十月', '十一月',
+						'十二月' ],
+				firstDay : 1
+			}
+		});
+		
+		
+$("#reservationtime").on('apply.daterangepicker', function() {
+	var daterange = $('#reservationtime').val().split('~');
+	var begin = daterange[0].trim();
+	var end = daterange[1].trim();
+	$('#begin').val(begin);
+	$('#end').val(end);
+
+	queryForm('query_Form');
+	loadData();
+	//loadData();
+}); 
+
+
 var requestData = new Array();
 var timeData = new Array();
  
@@ -113,17 +213,17 @@ var initDataSouce = function(){
 
 $(document).ready(function() {
 	initDataSouce();
-	
+	//loadData();
     var cols = [
-				{ title:'ID', name:'ID', width:60, align:'left'},
-				{ title:'用户', name:'USER', width:80, align:'left'},
-				{ title:'读次数', name:'R', width:100, align:'left'},
-				{ title:'写次数', name:'W', width:100, align:'left'},
-				{ title:'读占比', name:'R%', width:60, align:'left'},
-				{ title:'最大并发数', name:'MAX', width:80, align:'left'},				
-				{ title:'分段请求数', name:'TIME_COUNT',width:200, align:'left'},	
-		        { title:'耗时请求数', name:'TTL_COUNT',width:200, align:'left'},
-		        { title:'最后执行', name:'LAST_TIME' ,width:160, align:'left', 
+				{ title:'ID', name:'ID', width:60, align:'left',sortable:true},
+				{ title:'用户', name:'USER', width:80, align:'left',sortable:true},
+				{ title:'读次数', name:'R', width:100, align:'left',sortable:true},
+				{ title:'写次数', name:'W', width:100, align:'left',sortable:true},
+				{ title:'读占比', name:'PERCENT_R', width:60, align:'left',sortable:true},
+				{ title:'最大并发数', name:'MAX', width:80, align:'left',sortable:true},				
+				{ title:'分段请求数', name:'TIME_COUNT',width:200, align:'left',sortable:true},	
+		        { title:'耗时请求数', name:'TTL_COUNT',width:200, align:'left',sortable:true},
+		        { title:'最后执行', name:'LAST_TIME' ,width:160, align:'left',sortable:true, 
 		        	renderer: function(val){
 		        		console.debug( "vv:" + val);
 		        		var d = new Date(val).format("yyyy-MM-dd hh:mm:ss");;
@@ -131,15 +231,21 @@ $(document).ready(function() {
 		        	} 
 		        }
 	    ];
-		    
-   		mmgrid = $('#table').mmGrid({
+		 
+    mmgrid = $('#table').mmGrid({
 	        indexCol: true,
 	        height: '400',
 	        indexColWidth: 35,
 	        cols: cols,
-	        autoLoad: false,
-	        method: 'post',
-	        root: 'items'
+	        //url : './dispatcherAction/queryByMMGrid.do?service=showService&method=sqlsum',
+			method : 'post',  
+	        root: 'items',
+			plugins : [
+						//配置当前grid默认的分页大小以及总记录数的名称
+						$('#paginator').mmPaginator({
+							limit : 20,
+							totalCountName : 'totalCount'
+						}) ]
 	    });
 });
 
@@ -165,14 +271,25 @@ function loadData(){
 	var rainbow = new Rainbow();
 	rainbow.setService("showService");
 	rainbow.setMethod("sqlsum");
-	rainbow.setParam("ds", $('#datasource').val());
+	rainbow.setParam("ds", $('#datasource').val());  
+	rainbow.setParam("begin", $('#begin').val());
+	rainbow.setParam("end", $('#end').val());
+	rainbow.setParam("USER", $('#username').val());
 	rainbowAjax.query(rainbow, new function(){
 		this.onSuccess = function(data) {
-			 try {
-				
-				if (data.success) {
-					var dataRow = data.rows[0];
-					initMap(dataRow);
+			 try { 
+				if (data.success) { 
+					
+					var r = 0;
+					var w = 0;
+					var length = data.rows.length;
+					for (var i = 0; i < length; i++) {
+						var row = data.rows[i];
+						r += parseInt(row['R']);
+						w += parseInt(row['W']);
+					} 
+					var dataRow = data.rows[0];    
+					initMap(dataRow,r,w);
 					mmgrid.load(data.rows);
 				}
 			} catch (e) {
@@ -186,7 +303,7 @@ function loadData(){
 }
 
 
-function initMap(json){
+function initMap(json,r,w){
 	
 	 if ( json == undefined) {	
 		 var NULL_JSON = "{\"TTL_COUNT\":\"[0, 0, 0, 0]\",\"R\":\"0\",\"W\":\"0\",\"R%\":\"0\",\"MAX\":\"0\",\"ID\":1,\"LAST_TIME\":0,\"TIME_COUNT\":\"[0, 0, 0, 0]\",\"USER\":\"\"}";
@@ -197,8 +314,7 @@ function initMap(json){
 	 
 	//eval
 	var r_str = json["TIME_COUNT"];
-	var t_str = json["TTL_COUNT"];
-	
+	var t_str = json["TTL_COUNT"]; 
 	var r_array = eval( '(' + r_str + ')');
 	var t_array = eval( '(' + t_str + ')');
 		 
@@ -212,7 +328,7 @@ function initMap(json){
             ],
             function (ec) {
                 var myChart_read = ec.init(document.getElementById('redMap'));
-                myChart_read.setOption(initReadMap(json["R"],json["W"]));
+                myChart_read.setOption(initReadMap(r,w));
                 
                 var myChart_request = ec.init(document.getElementById('requestMap'));
                 myChart_request.setOption(initRequestMap(r_array));

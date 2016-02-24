@@ -98,6 +98,7 @@
 		<spring-framework.version>4.1.6.RELEASE</spring-framework.version>
 
 		<druid-version>1.0.14</druid-version>
+		<jsch-version>0.1.53</jsch-version>
 		<jstl.version>1.2</jstl.version>
 		<fastjson.version>1.1.22</fastjson.version>
 
@@ -113,7 +114,6 @@
 		<rainbow-common.version>1.5.11-RELEASE</rainbow-common.version>
 		<joda-time.version>2.3</joda-time.version>
 		<jrds.version>1.0</jrds.version>
-		<log4j1.version>1.2.17</log4j1.version>
 		<rrd4j.version>2.3</rrd4j.version>
 		<snmp4j.version>2.2.5</snmp4j.version>
 		<snmpprobes.version>1.0</snmpprobes.version>
@@ -130,14 +130,30 @@
 		<jackson-annotations>2.3.0</jackson-annotations>
 		<jackson-core>2.3.1</jackson-core>
 		<jackson-databind>2.3.3</jackson-databind>
+		<java.mail.version>1.4</java.mail.version>
 	</properties>
 	
 	<dependencies>
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<version>3.3.4</version>
+		</dependency>	
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${java.mail.version}</version>
+		</dependency>	
         <dependency>
            <groupId>com.alibaba</groupId>
            <artifactId>druid</artifactId>
            <version>${druid-version}</version>
-        </dependency>		
+        </dependency>	
+        <dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>${jsch-version}</version>
+	    </dependency>	
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
@@ -422,11 +438,6 @@
 				<artifactId>jrds</artifactId>
 				<version>${jrds.version}</version>
 			</dependency> -->
- 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j1.version}</version>
-			</dependency> 
 <!-- 			<dependency>
 				<groupId>org.rrd4j</groupId>
 				<artifactId>rrd4j</artifactId>

@@ -46,6 +46,10 @@
 	type="text/css" />
 <link href="static/mmgrid/css/mmPaginator.css" rel="stylesheet"
 	type="text/css" />
+<link href="static/mmgrid/css/mmGrid-bootstrap.css" rel="stylesheet"
+	type="text/css" />
+<link href="static/mmgrid/css/mmPaginator-bootstrap.css" rel="stylesheet"
+	type="text/css" />
 
 <!-- jit css -->
 <link type="text/css" href="resources/jit/css/Spacetree.css"
@@ -299,8 +303,9 @@
 	<script type="text/javascript"
 		src="resources/My97DatePicker/WdatePicker.js"></script>
 	<script type="text/javascript">
+	var mmgrid;
 		// To make Pace works on Ajax calls    
-
+		var intervalId;
 		function loadData() {
 			var rainbow = new Rainbow();
 			rainbow.setService("zkConfigService");
@@ -320,7 +325,7 @@
 							//mmgrid.load(data.rows);
 						}
 					} catch (e) {
-						alert(e);
+					//	alert(e);
 					}
 				};
 				this.onFail = function(jqXHR, textStatus, errorThrown) {
@@ -331,6 +336,7 @@
 		$(document).ready(function() {
 			loadData();
 		});
+		
 	</script>
 </body>
 </html>

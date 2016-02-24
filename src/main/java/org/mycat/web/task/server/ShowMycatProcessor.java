@@ -7,7 +7,6 @@ import java.util.Map;
 import org.hx.rainbow.common.context.RainbowProperties;
 import org.hx.rainbow.common.core.service.BaseService;
 import org.mycat.web.task.common.ITask;
-import org.mycat.web.task.common.TaskManger;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,4 +31,19 @@ public class ShowMycatProcessor extends BaseService implements ITask {
 		}
 	}
 
+	public static String ShowMycatSqlonlineServer(){
+	return (String)RainbowProperties.getProperties("sqlonline.server");
+
+	}
+	
+	public static String ShowMycatSqlonlineUser(){
+		return (String)RainbowProperties.getProperties("sqlonline.user");
+
+		}
+	
+	public static String ShowMycatSqlonlinePasswd(){
+		return (String)RainbowProperties.getProperties("sqlonline.passwd");
+
+		}
+	
 }
