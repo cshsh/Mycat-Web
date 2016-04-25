@@ -241,7 +241,8 @@ $(document).ready(function() {
 						},
 						{ title:'ID', name:'ID' ,width:100, align:'left', sortable:true },
 						{ title:'数据源', name:'DB_NAME' ,width:100, align:'left', sortable:true},
-						{ title:'用户', name:'USER' ,width:100, align:'left', sortable:true},
+						{ title:'用户', name:'USER' ,width:80, align:'left', sortable:true},
+						{ title:'IP', name:'IPAddr' ,width:80, align:'left', sortable:true},
 				        { title:'SQL', name:'SQL' ,width:600, align:'left',
 							renderer : function(val, item, rowIndex) {
 								//return '<button class="btn btn-danger btn-xs" onclick=explainMysql12("'+item+'")>删除</button>&nbsp;'; 
@@ -264,6 +265,18 @@ $(document).ready(function() {
 	        indexColWidth: 35,
 	        cols: cols,
 	        url: './dispatcherAction/queryByMMGrid.do?service=showService&method=sql',
+	        params: function(){
+	        	var daterange = $('#reservationtime').val().split('~');
+	        	var begin = daterange[0].trim();
+	        	var end = daterange[1].trim();
+	        	if ($('#username').val().length>0){
+	        		return {ds:$('#datasource').val(),begin:begin,end:end,username:$('#username').val()};
+	        	}else{
+	        		return {ds:$('#datasource').val(),begin:begin,end:end};
+	        	}	
+	        	
+	        	//return $('#query_Form').serializeJson();
+	        },	        	
 	        method: 'post',
 	        root: 'items',
 	        plugins:[
